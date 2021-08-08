@@ -53,7 +53,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             btMul -> onOperationPressed("x")
             btDivide -> onOperationPressed("/")
             btEqual -> onEqualPressed()
-            btClear -> "onClearPressed()"
+            btClear -> onClearPressed()
 
         }
     }
@@ -70,22 +70,34 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         screen.text = "0"
     }
 
+    private fun onClearPressed() {
+        firstNumber = 0.0
+        secondNumber = 0.0
+        this.operation = null
+
+        screen.text = "0"
+    }
+
     private fun onEqualPressed() {
         val result = when(this.operation) {
             "+" -> firstNumber + secondNumber
             "-" -> firstNumber - secondNumber
             "/" -> firstNumber / secondNumber
-            "*" -> firstNumber * secondNumber
-            else -> 0
+            "x" -> firstNumber * secondNumber
+            else -> 0.0
         }
 
         operation = null
         firstNumber = result.toDouble()
 
-        screen.text = if(result.toString().endsWith(".0")) {
-            result.toString().replace(".0", "")
-        } else {
-            "%.2f".format(result)
+        try {
+            screen.text = if(result.toString().endsWith(".0")) {
+                result.toString().replace(".0", "")
+            } else {
+                "%.2f".format(result)
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 
@@ -96,9 +108,9 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
     private fun checkOperation() {
         // Si operation es nulo...
-        operation?.let {
+        if(operation == null) {
             firstNumber = screen.text.toString().toDouble()
-        } ?: run {
+        } else {
             secondNumber = screen.text.toString().toDouble()
         }
     }
